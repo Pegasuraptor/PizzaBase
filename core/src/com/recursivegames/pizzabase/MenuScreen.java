@@ -6,11 +6,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -57,6 +60,16 @@ public class MenuScreen implements Screen
 		playButton.setTransform(true);
 		playButton.setOrigin(playButton.getPrefWidth() / 2, playButton.getPrefHeight() / 2);
 		playButton.setScale(2.5f);
+		playButton.addListener(new InputListener()
+		{
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button)
+			{
+				stage.dispose();
+				game.setScreen(new GameScreen(game));
+				return true;
+			}
+		});
 
 		ImageButton optionsButton = new ImageButton(optionsNormal, optionsDown);
 		optionsButton.setTransform(true);
@@ -67,6 +80,15 @@ public class MenuScreen implements Screen
 		exitButton.setTransform(true);
 		exitButton.setOrigin(exitButton.getPrefWidth() / 2, exitButton.getPrefHeight() / 2);
 		exitButton.setScale(2.5f);
+		exitButton.addListener(new InputListener()
+		{
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button)
+			{
+				Gdx.app.exit();
+				return true;
+			}
+		});
 
 		ImageButton creditsButton = new ImageButton(creditsNormal, creditsDown);
 		creditsButton.setTransform(true);

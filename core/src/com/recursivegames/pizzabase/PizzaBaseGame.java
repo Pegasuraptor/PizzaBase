@@ -52,6 +52,8 @@ public class PizzaBaseGame extends Game
 
 		manager.load("exitbutton.png", Texture.class);
 		manager.load("exitbutton_down.png", Texture.class);
+
+		manager.load("badlogic.jpg", Texture.class);
 		manager.finishLoading();
 	}
 

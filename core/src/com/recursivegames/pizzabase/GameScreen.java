@@ -95,7 +95,7 @@ public class GameScreen implements Screen
 
 	private void GetNewOrder()
 	{
-		newOrder = new Order();
+		newOrder = new Order(3);
 		numberClicked = 0;
 		guess = new int[3];
 	}

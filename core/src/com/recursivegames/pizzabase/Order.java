@@ -15,28 +15,29 @@ public class Order
 	private Random random = new Random();
 	public boolean solved = false;
 
-	public Order()
+	public Order(int numberOfItems)
 	{
-		order = new int[3];
+		order = new int[numberOfItems];
 
 		for (int i = 0; i < order.length; ++i)
 		{
-			order[i] = random.nextInt(6); //number between 0 and 5
-			Gdx.app.log("order", "order" + i);
+			order[i] = random.nextInt(5); //number between 0 and 4
+			Gdx.app.log("order", "order " + order[i]);
 		}
 	}
 
 	public boolean CheckOrder(int[] o)
 	{
+		Extensions.BubbleSort(o);
+		Extensions.BubbleSort(order);
+
+
 		boolean toCheck = true;
 		for (int i = 0; i < order.length; ++i)
 		{
-			for (int j = 0; j < o.length; ++j)
+			if (order[i] != o[i])
 			{
-				if (order[i] == o[j])
-				{
-					continue;
-				}
+				toCheck = false;
 			}
 		}
 

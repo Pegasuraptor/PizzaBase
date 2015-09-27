@@ -20,7 +20,7 @@ public class GameScreen implements Screen
 	private Sprite testSprite;
 
 	private Sprite[] sprites;
-	private Order newOrder;
+	private Customer[] customers;
 	private int numberClicked = 0;
 	private int[] guess;
 
@@ -34,10 +34,16 @@ public class GameScreen implements Screen
 		for (int i = 0; i < 5; ++i)
 		{
 			sprites[i] = new Sprite(game.manager.get("badlogic.jpg", Texture.class));
-			sprites[i].setPosition(0, i * (sprites[i].getRegionHeight() + 30) + 50);
+			sprites[i].setPosition(game.viewport.getWorldWidth() - sprites[i].getWidth(), (game.viewport.getWorldHeight() * 0.2f * i) + (((game.viewport.getWorldHeight() * 0.2f) - sprites[i].getHeight()) * 0.5f));
 		}
 
-		GetNewOrder();
+		customers = new Customer[4];
+		for(int i = 0; i < customers.length; i++)
+		{
+			customers[i] = new Customer(game, i);
+		}
+
+		startNewOrder();
 	}
 
 	@Override
@@ -69,33 +75,23 @@ public class GameScreen implements Screen
 					numberClicked++;
 				}
 			}
-		}
 
-		if (newOrder.solved)
-		{
-			GetNewOrder();
-		}
-
-		if (numberClicked >= 3)
-		{
-			if (newOrder.CheckOrder(guess))
+			if (numberClicked >= 3)
 			{
-				Gdx.app.log("Guess", "CORRECT");
+				for(int i = 0; i < customers.length; i++)
+				{
+					if (customers[i].getSprite().getBoundingRectangle().contains(temp.x, temp.y) && customers[i].isServed() == false)
+					{
+						customers[i].checkOrder(guess);
+						startNewOrder();
+					}
+				}
 			}
-			else
-			{
-				Gdx.app.log("Guess", "INCORRECT");
-			}
-
-			newOrder.solved = true;
 		}
-
-
 	}
 
-	private void GetNewOrder()
+	private void startNewOrder()
 	{
-		newOrder = new Order(3);
 		numberClicked = 0;
 		guess = new int[3];
 	}
@@ -109,6 +105,13 @@ public class GameScreen implements Screen
 		for (int i = 0; i < 5; ++i)
 		{
 			sprites[i].draw(game.batch);
+		}
+		for (int i = 0; i < customers.length; ++i)
+		{
+			if(customers[i].isServed() == false)
+			{
+				customers[i].draw(game.batch);
+			}
 		}
 		game.batch.end();
 	}

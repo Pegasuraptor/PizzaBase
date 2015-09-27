@@ -14,6 +14,15 @@
 # Sensitive or high-churn files:
 # .idea/dataSources.ids
 # .idea/dataSources.xml
+/build
+/android/build
+/html/build
+/ios/build
+/html/war
+/core/build
+/.gradle
+/android/gen
+/desktop/build
 # .idea/sqlDataSources.xml
 # .idea/dynamic.xml
 # .idea/uiDesigner.xml
@@ -46,3 +55,4 @@ crashlytics.properties
 crashlytics-build.properties
 
 local.properties
+/build/intermediates/dex-cache

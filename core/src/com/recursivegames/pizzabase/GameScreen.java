@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Package : com.recursivegames.pizzabase
@@ -23,6 +24,7 @@ public class GameScreen implements Screen
 	private Customer[] customers;
 	private int numberClicked = 0;
 	private int[] guess;
+	private float nextCustomerTimer;
 
 	public GameScreen(PizzaBaseGame game)
 	{
@@ -37,7 +39,10 @@ public class GameScreen implements Screen
 			sprites[i].setPosition(game.viewport.getWorldWidth() - sprites[i].getWidth(), (game.viewport.getWorldHeight() * 0.2f * i) + (((game.viewport.getWorldHeight() * 0.2f) - sprites[i].getHeight()) * 0.5f));
 		}
 
+		nextCustomerTimer = 5.0f;
+
 		customers = new Customer[4];
+
 		for(int i = 0; i < customers.length; i++)
 		{
 			customers[i] = new Customer(game, i);
@@ -55,12 +60,20 @@ public class GameScreen implements Screen
 	@Override
 	public void render(float delta)
 	{
-		Update();
+		Update(delta);
 		Draw();
 	}
 
-	private void Update()
+	private void Update(float delta)
 	{
+		nextCustomerTimer -= delta;
+
+		if(nextCustomerTimer <= 0.0f)
+		{
+			spawnNewCustomer();
+			nextCustomerTimer = 5.0f;
+		}
+
 		if (Gdx.input.justTouched())
 		{
 			Vector3 temp = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -68,7 +81,7 @@ public class GameScreen implements Screen
 
 			for(int i = 0; i < 5; ++i)
 			{
-				if (sprites[i].getBoundingRectangle().contains(temp.x, temp.y))
+				if (sprites[i].getBoundingRectangle().contains(temp.x, temp.y) && numberClicked < 3)
 				{
 					Gdx.app.log("Click", "Clicked :" + i);
 					guess[numberClicked] = i;
@@ -96,6 +109,27 @@ public class GameScreen implements Screen
 		guess = new int[3];
 	}
 
+	private void spawnNewCustomer()
+	{
+		Array freeSlots = new Array(customers.length);
+
+		for(int i = 0; i < customers.length; i++)
+		{
+			if(customers[i].isServed())
+			{
+				freeSlots.add(i);
+			}
+		}
+
+		freeSlots.shrink();
+
+		if(freeSlots.size > 0)
+		{
+			int customerNumber = (Integer) freeSlots.random();
+			customers[customerNumber].refreshCustomer();
+		}
+	}
+
 	private void Draw()
 	{
 		Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -106,12 +140,10 @@ public class GameScreen implements Screen
 		{
 			sprites[i].draw(game.batch);
 		}
+
 		for (int i = 0; i < customers.length; ++i)
 		{
-			if(customers[i].isServed() == false)
-			{
-				customers[i].draw(game.batch);
-			}
+			customers[i].draw(game.batch);
 		}
 		game.batch.end();
 	}

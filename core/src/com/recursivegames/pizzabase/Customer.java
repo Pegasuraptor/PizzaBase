@@ -23,9 +23,9 @@ public class Customer {
     {
         sprite = new Sprite(game.manager.get("customer.png", Texture.class));
         sprite.setPosition(0, (game.viewport.getWorldHeight() * 0.25f) * custNumber);
-        customerOrder = new Order(3);
-        rating = 5;
-        served = false;
+
+        //Set served to true so it won't draw and can be refreshed. Not the ideal solution but it'll do for now. -JR
+        served = true;
 
         orderText = new BitmapFont();
         orderText.getData().setScale(3f);
@@ -67,21 +67,31 @@ public class Customer {
         return served;
     }
 
+    public void refreshCustomer()
+    {
+        customerOrder = new Order(3);
+        rating = 5;
+        served = false;
+    }
+
     public void draw(SpriteBatch batch)
     {
-        sprite.draw(batch);
-        String orderString = "Order: ";
-        for(int i = 0; i < 3; i++)
+        if(served == false)
         {
-            orderString += Integer.toString(customerOrder.order[i]) + " ";
-        }
-        orderText.draw(batch, orderString, sprite.getX() + (sprite.getWidth() * 1.1f), sprite.getY() + sprite.getHeight());
+            sprite.draw(batch);
+            String orderString = "Order: ";
+            for (int i = 0; i < 3; i++)
+            {
+                orderString += Integer.toString(customerOrder.order[i]) + " ";
+            }
+            orderText.draw(batch, orderString, sprite.getX() + (sprite.getWidth() * 1.1f), sprite.getY() + sprite.getHeight());
 
-        String ratingString = "Rating: ";
-        for(int i = 0; i < rating; i++)
-        {
-            ratingString += "*";
+            String ratingString = "Rating: ";
+            for (int i = 0; i < rating; i++)
+            {
+                ratingString += "*";
+            }
+            ratingText.draw(batch, ratingString, sprite.getX() + (sprite.getWidth() * 1.1f), sprite.getY() + (sprite.getHeight() * 0.5f));
         }
-        ratingText.draw(batch, ratingString, sprite.getX() + (sprite.getWidth() * 1.1f), sprite.getY() + (sprite.getHeight() * 0.5f));
     }
 }
